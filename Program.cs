@@ -51,9 +51,10 @@ using (var scope = builder.Services.CreateScope())
 {
     var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
     var jobService = scope.ServiceProvider.GetRequiredService<JobService>();
-    
+    var openWeatherService = scope.ServiceProvider.GetRequiredService<OpenWeatherService>();
     // Schedule the job to run every minute
-    RecurringJob.AddOrUpdate("fetch-api-job", () => jobService.FetchAndSaveDataAsync(), Cron.Hourly);
+    RecurringJob.AddOrUpdate("fetch-api-job", () => jobService.FetchAndSaveDataAsync(), Cron.Minutely);
+    RecurringJob.AddOrUpdate("fetch-api-job", () => openWeatherService.FetchAndSaveDataAsync(), Cron.Minutely);
 }
 
 await builder.RunAsync();
